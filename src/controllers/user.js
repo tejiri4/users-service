@@ -1,11 +1,11 @@
-import { User } from "models";
+import db from "models";
 import messages from "utils/messages"
 
 const createUser = async (req, res) => {
   try {
 		const { name } = req.filtered;
 
-		const newUser = await User.create({
+		const newUser = await db.User.create({
 			name
 		});
 
@@ -17,9 +17,9 @@ const createUser = async (req, res) => {
 
 const getUsers = async (req, res) => {
 	try {
-		const users = await User.findAll();
+		const { rows, count } = await db.User.findAndCountAll();
 
-		return res.status(200).json(users)
+		return res.status(200).json({ count, users: rows })
   } catch(err) {
 		return res.status(500).json({ message: messages.serverError });
   }
@@ -27,7 +27,7 @@ const getUsers = async (req, res) => {
 
 const getUser = async (req, res) => {
 	try {
-		const user = await User.findByPk(req.filtered.id);
+		const user = await db.User.findByPk(req.filtered.id);
 		
 		if(!user) return res.status(400).json({ message: messages.userNotFound });
 
@@ -39,7 +39,7 @@ const getUser = async (req, res) => {
 
 const deleteUser = async (req, res) => {
 	try {
-		const user = await User.findByPk(req.filtered.id);
+		const user = await db.User.findByPk(req.filtered.id);
 
 		if(!user) return res.status(400).json({ message: messages.userNotFound  });
 
@@ -53,7 +53,7 @@ const deleteUser = async (req, res) => {
 
 const updateUser = async (req, res) => {
 	try {
-		const user = await User.findByPk(req.filtered.id);
+		const user = await db.User.findByPk(req.filtered.id);
 
 		if(!user) return res.status(400).json({ message: messages.userNotFound  });
 
